@@ -32,8 +32,40 @@ class Inventario{
     /*==================================================
     Método para agregar nuevos Productos al inventario
     ===================================================*/
-    agregar(nuevo){
-        this.datos.push(nuevo);
+    agregar(nuevoProducto){
+        // Verificamos si en nuestro inventario ya existe un producto con el código del nuevo producto.
+        let productoEncontrado = this.buscar(nuevoProducto)[1];
+        
+        if(productoEncontrado){
+            // El producto ya existe
+            return true;
+        } else {
+            // Si el inventario está vacío simplemente lo agregamos.
+            if(this.datos.length === 1){
+                this.datos.push(nuevoProducto);
+            } else {
+                let insertarEn = -1;
+
+                for(let i=1; i < this.datos.length; i++){
+                    if(nuevoProducto.codigo < this.datos[i].codigo){
+                        insertarEn = i;
+                        break;
+                    }
+                }
+
+                if(insertarEn === -1){
+                    // Si no cambió significa que es el código más alto
+                    this.datos.push(nuevoProducto);
+                } else{
+                    // Agregamos un valor nulo al final y desplazamos los códigos al final.
+                    this.datos.push(null);
+                    for(let i=this.datos.length ; i>insertarEn ; i--){
+                        this.datos[i] = this.datos[i-1];
+                    }
+                    this.datos[insertarEn] = nuevoProducto;
+                }
+            }
+        }
     }
     /*==================================================
     Método para lista todos los Productos del inventario
@@ -56,14 +88,14 @@ class Inventario{
     retorna su objeto.
     =======================================================*/
     buscar(codigoBuscado){
-        let codigoEncontrado = null;
+        let productoBuscado = null;
         let indexCodigo = null;
         let indice = 1;
 
         // Cuando encontremos un producto o lleguemos al tamaño de nuestros datos, se rompe el ciclo.
-        while(!codigoEncontrado && indice<this.datos.length){
+        while(!productoBuscado && indice<this.datos.length){
             if(this.datos[indice].codigo == codigoBuscado){
-                codigoEncontrado = this.datos[indice];
+                productoBuscado = this.datos[indice];
                 indexCodigo = indice;
             }
             indice++
@@ -73,7 +105,7 @@ class Inventario{
         // Para llamar al Producto o su Índice usar: 
         //      - Por Producto: .buscar(x)[0]
         //      - Por IndexCodigo: .buscar(x)[1]
-        return [codigoEncontrado,indexCodigo];
+        return [productoBuscado,indexCodigo];
     }
     /*=================================================
     Método que busca un código y lo elimina.
@@ -109,7 +141,7 @@ function borrarInformacion(){
 
 // Función que confirma el guardado de los datos
 function mensajeDeGuardado(){
-    document.getElementById("detalles").innerHTML += "Se guardó correctamente la Información\n"
+    document.getElementById("detalles").innerHTML += "Se guardó correctamente la Información<br>"
 }
 
 // Variable global
@@ -130,8 +162,8 @@ document.addEventListener("DOMContentLoaded",()=>{
         let cantidad = document.getElementById("txtCantidad").value;
         let costo = document.getElementById("txtCosto").value;
 
-        let nuevo = new Producto(codigo,producto,cantidad,costo);
-        miInventario.agregar(nuevo);
+        let nuevoProducto = new Producto(codigo,producto,cantidad,costo);
+        miInventario.agregar(nuevoProducto);
 
         // Boramos la información de los inputs y mandamos un mensaje de que se guardó la información correctamente.
         borrarInformacion();
