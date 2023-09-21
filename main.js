@@ -4,7 +4,7 @@ almacenarán en la Clase Inventario.
 ===================================================*/
 class Producto{
     constructor(codigo,producto,cantidad,costo){
-        this.codigo = codigo;
+        this.codigo = parseInt(codigo);
         this.producto = producto;
         this.cantidad = cantidad;
         this.costo = costo;
@@ -33,15 +33,8 @@ class Inventario{
     Método para agregar nuevos Productos al inventario
     ===================================================*/
     agregar(nuevoProducto){
-        // Verificamos si en nuestro inventario ya existe un producto con el código del nuevo producto.
-        let productoEncontrado = this.buscar(nuevoProducto)[1];
-        
-        if(productoEncontrado){
-            // El producto ya existe
-            return true;
-        } else {
             // Si el inventario está vacío simplemente lo agregamos.
-            if(this.datos.length === 1){
+            if(this.datos.length == 1){
                 this.datos.push(nuevoProducto);
             } else {
                 let insertarEn = -1;
@@ -53,19 +46,18 @@ class Inventario{
                     }
                 }
 
-                if(insertarEn === -1){
+                if(insertarEn == -1){
                     // Si no cambió significa que es el código más alto
                     this.datos.push(nuevoProducto);
                 } else{
                     // Agregamos un valor nulo al final y desplazamos los códigos al final.
-                    this.datos.push(null);
-                    for(let i=this.datos.length ; i>insertarEn ; i--){
+                    //this.datos.push(null);
+                    for(let i=this.datos.length; i>insertarEn ; i--){
                         this.datos[i] = this.datos[i-1];
                     }
                     this.datos[insertarEn] = nuevoProducto;
                 }
             }
-        }
     }
     /*==================================================
     Método para lista todos los Productos del inventario
@@ -162,12 +154,16 @@ document.addEventListener("DOMContentLoaded",()=>{
         let cantidad = document.getElementById("txtCantidad").value;
         let costo = document.getElementById("txtCosto").value;
 
-        let nuevoProducto = new Producto(codigo,producto,cantidad,costo);
-        miInventario.agregar(nuevoProducto);
+        if(miInventario.buscar(codigo)[0]){
+            detalles.innerHTML+=`<p>El código <b>${codigo}<b> ya existe en el inventario.<p>`
+        } else{
+            let nuevoProducto = new Producto(codigo,producto,cantidad,costo);
+            miInventario.agregar(nuevoProducto);
 
-        // Boramos la información de los inputs y mandamos un mensaje de que se guardó la información correctamente.
-        borrarInformacion();
-        mensajeDeGuardado();  
+            // Boramos la información de los inputs y mandamos un mensaje de que se guardó la información correctamente.
+            borrarInformacion();
+            mensajeDeGuardado();  
+        }
     });
     
     /*--------------------------------------------------------------
