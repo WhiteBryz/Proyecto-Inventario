@@ -58,18 +58,21 @@ class Inventario{
     buscar(codigoBuscado){
         let codigoEncontrado = null;
         let indexCodigo = null;
-        
-        for(let i=1;i<this.datos.length;i++){
-            if(this.datos[i].codigo == codigoBuscado){
-                codigoEncontrado = this.datos[i];
-                indexCodigo = i;
+        let indice = 1;
+
+        // Cuando encontremos un producto o lleguemos al tamaño de nuestros datos, se rompe el ciclo.
+        while(!codigoEncontrado && indice<this.datos.length){
+            if(this.datos[indice].codigo == codigoBuscado){
+                codigoEncontrado = this.datos[indice];
+                indexCodigo = indice;
             }
+            indice++
         }
 
         // Retornamos el Producto encontrado o valor nulo para condicionarlo posteriormente.
         // Para llamar al Producto o su Índice usar: 
-        //      - Producto: .buscar(x)[0]
-        //      - IndexCodigo: .buscar(x)[1]
+        //      - Por Producto: .buscar(x)[0]
+        //      - Por IndexCodigo: .buscar(x)[1]
         return [codigoEncontrado,indexCodigo];
     }
     /*=================================================
@@ -82,7 +85,8 @@ class Inventario{
         indexCodigo = this.buscar(codigoEliminar)[1];
 
         if(indexCodigo){
-            // Recorremos los productos una posición anterior para no dejar valores nulos.
+            // Empezamos a partir del índice encontrado.
+            // Recorremos los productos a una posición anterior (-1) para no dejar la posición encontrada como nula.
             for(let x = indexCodigo; x<this.datos.length; x++){
                 this.datos[x] = this.datos[x+1];
             }
@@ -105,7 +109,7 @@ function borrarInformacion(){
 
 // Función que confirma el guardado de los datos
 function mensajeDeGuardado(){
-    document.getElementById("detalles").innerHTML += "Se guardó correctamente la Información"
+    document.getElementById("detalles").innerHTML += "Se guardó correctamente la Información\n"
 }
 
 // Variable global
@@ -163,10 +167,11 @@ document.addEventListener("DOMContentLoaded",()=>{
         let producoEliminar = miInventario.eliminar(codigo);
         let detalles = document.getElementById("detalles");
 
-        if(!producoEliminar){
-            detalles.innerHTML += `<p>El código ${codigo} NO se encuentra en la lista, favor de verificarlo.</p>`
-        } else {
+        // Mandamos mensaje acorde a si se encontró un producto a eliminar o no se encontró.
+        if(producoEliminar){
             detalles.innerHTML += `<p>El código ${codigo} fue eliminado correctamente.</p>`
+        } else {
+            detalles.innerHTML += `<p>El código ${codigo} NO se encuentra en la lista, favor de verificarlo.</p>`
         }
     })
 
