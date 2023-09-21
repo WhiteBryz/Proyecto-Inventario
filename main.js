@@ -59,15 +59,13 @@ class Inventario{
         let codigoEncontrado = null;
         let indexCodigo = null;
         
-        this.datos.forEach((producto,index) => {
-            // Si no es nulo. Ayuda a poder eliminar el primer Producto porque si estuviera en el índice 0 devolvería un índice=0, que esto igual a nulo. De esta manera obligamos que el primer producto tenga índice 1 y al ejecutar el método "eliminar" se pueda hacer de manera correcta. 
-            if(producto){
-                if(producto.codigo == codigoBuscado){
-                    codigoEncontrado = producto;
-                    indexCodigo = index;
-                }
+        for(let i=1;i<this.datos.length;i++){
+            if(this.datos[i].codigo == codigoBuscado){
+                codigoEncontrado = this.datos[i];
+                indexCodigo = i;
             }
-        })
+        }
+
         // Retornamos el Producto encontrado o valor nulo para condicionarlo posteriormente.
         // Para llamar al Producto o su Índice usar: 
         //      - Producto: .buscar(x)[0]
@@ -103,6 +101,11 @@ function borrarInformacion(){
     document.getElementById("txtProducto").value = "";
     document.getElementById("txtCantidad").value = "";
     document.getElementById("txtCosto").value = "";
+}
+
+// Función que confirma el guardado de los datos
+function mensajeDeGuardado(){
+    document.getElementById("detalles").innerHTML += "Se guardó correctamente la Información"
 }
 
 // Variable global
