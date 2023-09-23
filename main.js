@@ -9,10 +9,11 @@ class Producto{
         this.cantidad = cantidad;
         this.costo = costo;
     }
-    // Retorna la información de de un producto.
+    // Retorna información básica de un producto.
     info(){
         return `${this.codigo}:: ${this.producto}:: ${this.cantidad}:: ${this.costo}`;
     }
+    // Retorna la información con elementos HTML
     infoHtml(){
         return `<b>Código:</b> ${this.codigo} ::: <b>Nombre:</b> ${this.producto} ::: <b>Cantidad:</b> ${this.cantidad} ::: <b>Costo:</b> ${this.costo}`;
     }
@@ -59,8 +60,8 @@ class Inventario{
             }
     }
     /*==================================================
-    Método para listar todos los Productos del inventario
-    por orden de ingreso.
+    Método para listar todos los Productos del 
+    inventario
     ===================================================*/
     listar(){
         let listarProductos = "";
@@ -76,7 +77,7 @@ class Inventario{
     }
     /*==================================================
     Método para listar todos los Productos del inventario
-    por orden de ingreso ordenados inversamente
+    por orden inverso a su ingreso.
     ===================================================*/
     listarInverso(){
         let listarProductosInverso = "";
@@ -118,10 +119,8 @@ class Inventario{
     Método que busca un código y lo elimina.
     ==================================================*/
     eliminar(codigoEliminar){
-        let indexCodigo = null;
-
         // Buscamos el código del producto a eliminar y traemos su Índice.
-        indexCodigo = this.buscar(codigoEliminar)[1];
+        let indexCodigo = this.buscar(codigoEliminar)[1];
 
         if(indexCodigo){
             // Empezamos a partir del índice encontrado.
