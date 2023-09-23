@@ -47,11 +47,10 @@ class Inventario{
                 }
 
                 if(insertarEn == -1){
-                    // Si no cambió significa que es el código más alto
+                    // Si no cambió significa que el código del nuevo producto es el más alto.
                     this.datos.push(nuevoProducto);
                 } else{
                     // Agregamos un valor nulo al final y desplazamos los códigos al final.
-                    //this.datos.push(null);
                     for(let i=this.datos.length; i>insertarEn ; i--){
                         this.datos[i] = this.datos[i-1];
                     }
