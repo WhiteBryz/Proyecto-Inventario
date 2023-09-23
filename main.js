@@ -18,7 +18,6 @@ class Producto{
     }
 }
 
-
 /*==================================================
 Clase que guarda los productos (objetos Producto) y
 que contiene los métodos: Agregar, Listar, Buscar y
@@ -60,19 +59,35 @@ class Inventario{
             }
     }
     /*==================================================
-    Método para lista todos los Productos del inventario
+    Método para listar todos los Productos del inventario
     por orden de ingreso.
     ===================================================*/
     listar(){
-        let listaProductos = "";
+        let listarProductos = "";
 
-        if(this.datos.length>1){
-            for(let i=1;i<this.datos.length;i++){
-                listaProductos += `[PRODUCTO NO.: ${i} ] ::: ${this.datos[i].infoHtml()}<br>`;
-            }
-            return listaProductos;
+        if(this.datos.length == 1){
+            return `No se han registrado productos en el inventario<br>`;
         } else {
-            return `No se han registrado productos en el Inventario`;
+            for(let i=1;i<this.datos.length;i++){
+                listarProductos += `[PRODUCTO NO.: ${i} ] ::: ${this.datos[i].infoHtml()}<br>`;
+            }
+            return listarProductos;
+        }
+    }
+    /*==================================================
+    Método para listar todos los Productos del inventario
+    por orden de ingreso ordenados inversamente
+    ===================================================*/
+    listarInverso(){
+        let listarProductosInverso = "";
+
+        if(this.datos.length == 1){
+            return `No se han registrado productos en el Inventario<br>`;
+        } else{
+            for(let i=this.datos.length-1;i>0;i--){
+                listarProductosInverso += `[PRODUCTO NO.: ${i} ] ::: ${this.datos[i].infoHtml()}<br>`;
+            }
+            return listarProductosInverso;
         }
     }
     /*======================================================
@@ -124,7 +139,7 @@ class Inventario{
 }
 
 // Función que borra la información de los inputs.
-function borrarInformacion(){
+function borrarInformacionDeInputs(){
     document.getElementById("txtCodigo").value = "";
     document.getElementById("txtProducto").value = "";
     document.getElementById("txtCantidad").value = "";
@@ -161,7 +176,7 @@ document.addEventListener("DOMContentLoaded",()=>{
             miInventario.agregar(nuevoProducto);
 
             // Boramos la información de los inputs y mandamos un mensaje de que se guardó la información correctamente.
-            borrarInformacion();
+            borrarInformacionDeInputs();
             mensajeDeGuardado();  
         }
     });
@@ -211,6 +226,16 @@ document.addEventListener("DOMContentLoaded",()=>{
     btnListar.addEventListener("click",()=>{
         let detalles = document.getElementById("detalles");
         detalles.innerHTML += miInventario.listar();
+    })
+
+    /*--------------------------------------------------------------
+    Botón ListarInverso
+    Busca el código ingresado y lo elimina del inventario.
+    ---------------------------------------------------------------*/
+    let btnListarInverso = document.getElementById("btnListarInverso");
+    btnListarInverso.addEventListener("click",()=>{
+        let detalles = document.getElementById("detalles");
+        detalles.innerHTML += miInventario.listarInverso();
     })
 })
 
