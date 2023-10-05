@@ -39,7 +39,7 @@ class Inventario{
             if(!this.productos){
                 this.productos = nuevoProducto;
             } else {
-                this._recAgregar(nuevoProducto,this.producto);
+                this._recAgregar(nuevoProducto,this.productos);
             }
     }
     // Método recursivo para agregar productos.
@@ -107,24 +107,28 @@ class Inventario{
     =======================================================*/
     buscar(codigoBuscado){
         let productoBuscado = null;
-        let indexCodigo = null;
-        let indice = 1;
-
-        // Cuando encontremos un producto o lleguemos al tamaño de nuestros datos, se rompe el ciclo.
-        while(!productoBuscado && indice<this.datos.length){
-            if(this.datos[indice].codigo == codigoBuscado){
-                productoBuscado = this.datos[indice];
-                indexCodigo = indice;
+        let indiceCodigo = 0;
+        if(this.productos){
+            let aux = this.productos
+            console.log(aux);
+            // Cuando encontremos un producto o lleguemos al tamaño de nuestros datos, se rompe el ciclo.
+            while(!productoBuscado && aux.siguiente){
+                if(this.aux.siguiente.codigo == codigoBuscado){
+                    productoBuscado = this.aux;
+                    indiceCodigo++
+                }
+                aux = aux.siguiente;
+                indiceCodigo++;
             }
-            indice++
-        }
 
-        // Retornamos el Producto encontrado o valor nulo para condicionarlo posteriormente.
-        // Para llamar al Producto o su Índice usar: 
-        //      - Por Producto: .buscar(x)[0]
-        //      - Por IndexCodigo: .buscar(x)[1]
-        return [productoBuscado,indexCodigo];
+            // Retornamos el Producto encontrado o valor nulo para condicionarlo posteriormente.
+            // Para llamar al Producto o su Índice usar: 
+            //      - Por Producto: .buscar(x)[0]
+            //      - Por IndexCodigo: .buscar(x)[1]
+        }
+        return [productoBuscado,indiceCodigo];
     }
+
     /*=================================================
     Método que busca un código y lo elimina.
     ==================================================*/
