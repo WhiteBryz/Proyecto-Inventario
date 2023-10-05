@@ -32,6 +32,7 @@ class Inventario{
     }
     /*==================================================
     Método para agregar nuevos Productos al inventario
+    con recursividad.
     ===================================================*/
     agregar(nuevoProducto){
             // Si el inventario está vacío simplemente lo agregamos.
@@ -52,18 +53,36 @@ class Inventario{
     }
     /*==================================================
     Método para listar todos los Productos del 
-    inventario
+    inventario con recursividad
     ===================================================*/
     listar(){
         let listarProductos = "";
 
-        if(this.datos.length == 1){
-            return `No se han registrado productos en el inventario<br>`;
-        } else {
-            for(let i=1;i<this.datos.length;i++){
-                listarProductos += `[PRODUCTO NO.: ${i} ] ::: ${this.datos[i].infoHtml()}<br>`;
-            }
+        if(!this.productos){
+            return `No se han registrado productos en el inventario<br>`
+        } else{
+            listarProductos = this._recListar(this.productos);
             return listarProductos;
+        }
+
+
+    //     if(this.datos.length == 1){
+    //         return `No se han registrado productos en el inventario<br>`;
+    //     } else {
+    //         for(let i=1;i<this.datos.length;i++){
+    //             listarProductos += `[PRODUCTO NO.: ${i} ] ::: ${this.datos[i].infoHtml()}<br>`;
+    //         }
+    //         return listarProductos;
+    //     }
+    }
+    _recListar(nodox){
+        let lista = "";
+        // cuando llegue al último devuelve los datos.
+        if(!nodox.siguiente){
+            return lista += `[PRODUCTO NO.: ${i} ] ::: ${nodox.infoHtml()}<br>`
+        } else{
+            lista += `[PRODUCTO NO.: ${i} ] ::: ${nodox.infoHtml()}<br>`
+            this._recListar(nodox.siguiente);
         }
     }
     /*==================================================
