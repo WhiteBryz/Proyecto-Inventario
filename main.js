@@ -8,6 +8,7 @@ class Producto{
         this.producto = producto;
         this.cantidad = cantidad;
         this.costo = costo;
+        this.siguiente = null;
     }
     // Retorna información básica de un producto.
     info(){
@@ -26,37 +27,28 @@ Eliminar.
 ===================================================*/
 class Inventario{
     constructor(){
-        // El índice 0 lo anulamos.
-        this.datos=[null];
+        this.productos = null;
+        this.ultimo = null;
     }
     /*==================================================
     Método para agregar nuevos Productos al inventario
     ===================================================*/
     agregar(nuevoProducto){
             // Si el inventario está vacío simplemente lo agregamos.
-            if(this.datos.length == 1){
-                this.datos.push(nuevoProducto);
+            if(!this.productos){
+                this.productos = nuevoProducto;
             } else {
-                let insertarEn = -1;
-
-                for(let i=1; i < this.datos.length; i++){
-                    if(nuevoProducto.codigo < this.datos[i].codigo){
-                        insertarEn = i;
-                        break;
-                    }
-                }
-
-                if(insertarEn == -1){
-                    // Si no cambió significa que el código del nuevo producto es el más alto.
-                    this.datos.push(nuevoProducto);
-                } else{
-                    // Agregamos un valor nulo al final y desplazamos los códigos al final.
-                    for(let i=this.datos.length; i>insertarEn ; i--){
-                        this.datos[i] = this.datos[i-1];
-                    }
-                    this.datos[insertarEn] = nuevoProducto;
-                }
+                this._recAgregar(nuevoProducto,this.producto);
             }
+    }
+    // Método recursivo para agregar productos.
+    _recAgregar(nuevo,nodox){
+        if(!nodox.siguiente){
+            nodox.siguiente = nuevo;
+            this.ultimo = nodox.siguiente;
+        } else{
+            this._recAgregar(nuevo,nodox.siguiente);
+        }
     }
     /*==================================================
     Método para listar todos los Productos del 
