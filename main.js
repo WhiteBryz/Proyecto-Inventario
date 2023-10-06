@@ -16,7 +16,7 @@ class Producto{
     }
     // Retorna la información con elementos HTML
     infoHtml(){
-        return `<b>Código:</b> ${this.codigo} ::: <b>Nombre:</b> ${this.producto} ::: <b>Cantidad:</b> ${this.cantidad} ::: <b>Costo:</b> ${this.costo}`;
+        return `<b>Código:</b> ${this.codigo} ::: <b>Nombre:</b> ${this.producto} ::: <b>Cantidad:</b> ${this.cantidad} ::: <b>Costo:</b> ${this.costo}<br>`;
     }
 }
 
@@ -27,7 +27,7 @@ Eliminar.
 ===================================================*/
 class Inventario{
     constructor(){
-        this.productos = null;
+        this.primero = null;
         this.ultimo = null;
     }
     /*==================================================
@@ -36,14 +36,14 @@ class Inventario{
     ===================================================*/
     agregar(nuevoProducto){
             // Si el inventario está vacío simplemente lo agregamos.
-            if(!this.productos){
-                this.productos = nuevoProducto;
+            if(!this.primero){
+                this.primero = nuevoProducto;
             } else {
-                this._recAgregar(nuevoProducto,this.productos);
+                this._recAgregar(nuevoProducto,this.primero);
             }
     }
-    // Método recursivo para agregar productos.
-    _recAgregar(nuevo,nodox){
+    _recAgregar(nuevo,nodox){ //recursividad
+        // cuando llegue al final agrega el nuevo
         if(!nodox.siguiente){
             nodox.siguiente = nuevo;
             this.ultimo = nodox.siguiente;
@@ -56,33 +56,18 @@ class Inventario{
     inventario con recursividad
     ===================================================*/
     listar(){
-        let listarProductos = "";
-
-        if(!this.productos){
+        if(!this.primero){
             return `No se han registrado productos en el inventario<br>`
         } else{
-            listarProductos = this._recListar(this.productos);
-            return listarProductos;
+            return this._recListar(this.primero);
         }
-
-
-    //     if(this.datos.length == 1){
-    //         return `No se han registrado productos en el inventario<br>`;
-    //     } else {
-    //         for(let i=1;i<this.datos.length;i++){
-    //             listarProductos += `[PRODUCTO NO.: ${i} ] ::: ${this.datos[i].infoHtml()}<br>`;
-    //         }
-    //         return listarProductos;
-    //     }
     }
-    _recListar(nodox){
-        let lista = "";
+    _recListar(nodox){ // recursividad
         // cuando llegue al último devuelve los datos.
         if(!nodox.siguiente){
-            return lista += `[PRODUCTO NO.: ${i} ] ::: ${nodox.infoHtml()}<br>`
+            return nodox.infoHtml();
         } else{
-            lista += `[PRODUCTO NO.: ${i} ] ::: ${nodox.infoHtml()}<br>`
-            this._recListar(nodox.siguiente);
+            return nodox.infoHtml() + this._recListar(nodox.siguiente);
         }
     }
     /*==================================================
@@ -90,15 +75,18 @@ class Inventario{
     por orden inverso a su ingreso.
     ===================================================*/
     listarInverso(){
-        let listarProductosInverso = "";
-
-        if(this.datos.length == 1){
-            return `No se han registrado productos en el Inventario<br>`;
+        if(!this.primero){
+            return `No se han registrados productos en el inventario<br>`
         } else{
-            for(let i=this.datos.length-1;i>0;i--){
-                listarProductosInverso += `[PRODUCTO NO.: ${i} ] ::: ${this.datos[i].infoHtml()}<br>`;
-            }
-            return listarProductosInverso;
+            return this._recListarInverso(this.primero);
+        }
+    }
+    _recListarInverso(nodox){
+        // cuando llegue al último devuelve la información
+        if(!nodox.siguiente){
+            return nodox.infoHtml();
+        } else{
+            return this._recListarInverso(nodox.siguiente) + nodox.infoHtml();
         }
     }
     /*======================================================
