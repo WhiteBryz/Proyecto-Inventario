@@ -167,6 +167,7 @@ class Inventario{
 
 // Función que borra la información de los inputs.
 function borrarInformacionDeInputs(){
+    document.getElementById("txtInsertarEn").value = "";
     document.getElementById("txtCodigo").value = "";
     document.getElementById("txtProducto").value = "";
     document.getElementById("txtCantidad").value = "";
@@ -185,6 +186,7 @@ let miInventario = new Inventario()
 Codigo que se ejecuta una vez se carga toda la página de HTML
 ============================================================*/
 document.addEventListener("DOMContentLoaded",()=>{    
+    
     /*--------------------------------------------------------------
     Botón de Agregar
     Agrega nuevos elementos a nuestro inventario.
@@ -267,5 +269,60 @@ document.addEventListener("DOMContentLoaded",()=>{
         let detalles = document.getElementById("detalles");
         detalles.innerHTML += "<br>"+ miInventario.listarInverso();
     })
-})
 
+    /*----------------------------------------------------------------
+    Botón InsertarEn
+    Desactiva varios botones y muestra el botón para insertarEn.
+    También activa un nuevo input para recoger la posición en la que
+    se quiere insertar.
+    ----------------------------------------------------------------*/
+    let btnInsertarEn = document.getElementById("btnInsertarEn");
+    btnInsertarEn.addEventListener("click",()=>{
+        // Desactivar botones
+        document.getElementById("btnAdd").disabled = true;
+        document.getElementById("btnBuscar").disabled = true;
+        document.getElementById("btnEliminar").disabled = true;
+        document.getElementById("btnListar").disabled = true;
+        document.getElementById("btnListarInverso").disabled = true;
+        document.getElementById("btnInsertarEn").disabled = true;
+
+        // Activar botón de agregar e input para añadir la posición
+        document.getElementById("btnAgregarEn").disabled = false;
+        document.getElementById("txtInsertarEn").disabled = false;
+    });
+    
+    let btnAgregarEn = document.getElementById("btnAgregarEn");
+    btnAgregarEn.addEventListener("click",()=>{
+        let posicion = document.getElementById("txtInsertarEn").value
+        let codigo = document.getElementById("txtCodigo").value;
+        let producto = document.getElementById("txtProducto").value;
+        let cantidad = document.getElementById("txtCantidad").value;
+        let costo = document.getElementById("txtCosto").value;
+        let detalles = document.getElementById("detalles");
+
+        let productoBuscado = miInventario.buscar(codigo);
+
+        if(productoBuscado){
+            detalles.innerHTML += `<br> El código ${codigo} ya se encuentra registrado.` 
+        } else{
+            let nuevo = new Producto(codigo,producto,cantidad,costo);
+            miInventario.insertarEnPosicion(nuevo,posicion);
+
+            // Reactivamos los botones
+            document.getElementById("btnAdd").disabled = false;
+            document.getElementById("btnBuscar").disabled = false;
+            document.getElementById("btnEliminar").disabled = false;
+            document.getElementById("btnListar").disabled = false;
+            document.getElementById("btnListarInverso").disabled = false;
+            document.getElementById("btnInsertarEn").disabled = false;
+
+            // Deshabilitamos el input de posición y el botón de agregar
+            document.getElementById("btnAgregarEn").disabled = true;
+            document.getElementById("txtInsertarEn").disabled = true;
+            
+            borrarInformacionDeInputs();
+        }
+
+    });
+
+});
