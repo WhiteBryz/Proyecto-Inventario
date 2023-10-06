@@ -134,6 +134,35 @@ class Inventario{
             }
         }
     }
+    /*=================================================
+    Método que inserta un producto en una posición dada.
+    ==================================================*/
+    insertarEnPosicion(nuevo,posicion){
+        let aux = this.primero
+        let anterior = null;
+        let contador = 1;
+
+        while(contador != posicion && aux.siguiente){
+            anterior = aux
+            aux = aux.siguiente;
+            contador++
+        }
+        
+        // Evaluamos casos para insertar
+        if(contador == 1){ // Insertar en primera posición
+            if(aux.codigo == this.ultimo.codigo){ // Si es único valor
+                this.ultimo = aux
+            }
+            nuevo.siguiente = aux;
+            this.primero = nuevo;
+        } else if(posicion>contador){ // Si se quiere agregar más allá del número de elementos que tenemos lo insertamos al último.
+            aux.siguiente = nuevo;
+            this.ultimo = nuevo;
+        } else{ // Si la posición es la última
+            nuevo.siguiente = aux;
+            anterior.siguiente = nuevo;
+        }
+    }
 }
 
 // Función que borra la información de los inputs.
@@ -226,7 +255,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     let btnListar = document.getElementById("btnListar");
     btnListar.addEventListener("click",()=>{
         let detalles = document.getElementById("detalles");
-        detalles.innerHTML += miInventario.listar();
+        detalles.innerHTML += "<br>"+ miInventario.listar();
     })
 
     /*--------------------------------------------------------------
@@ -236,7 +265,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     let btnListarInverso = document.getElementById("btnListarInverso");
     btnListarInverso.addEventListener("click",()=>{
         let detalles = document.getElementById("detalles");
-        detalles.innerHTML += miInventario.listarInverso();
+        detalles.innerHTML += "<br>"+ miInventario.listarInverso();
     })
 })
 
