@@ -88,7 +88,7 @@ class Inventario{
     =======================================================*/
     buscar(codigoBuscado){
         if(!this.primero){
-            return null;
+            return false;
         } else{
             return this._recBuscar(parseInt(codigoBuscado),this.primero);
         }
@@ -97,7 +97,7 @@ class Inventario{
         if(nodox.codigo == codigoBuscado){
             return nodox;
         } else if(!nodox.siguiente){
-            return null;
+            return false;
         } else{
             return this._recBuscar(codigoBuscado,nodox.siguiente);
         }
@@ -107,20 +107,31 @@ class Inventario{
     Método que busca un código y lo elimina.
     ==================================================*/
     eliminar(codigoEliminar){
-        // Buscamos el código del producto a eliminar y traemos su Índice.
-        let indexCodigo = this.buscar(codigoEliminar)[1];
-
-        if(indexCodigo){
-            // Empezamos a partir del índice encontrado.
-            // Recorremos los productos a una posición anterior (-1) para no dejar la posición encontrada como nula.
-            for(let x = indexCodigo; x<this.datos.length; x++){
-                this.datos[x] = this.datos[x+1];
-            }
-            this.datos.pop();
-            // Retornamos verdadero para condicionarlo posteriormente
-            return true;
+        if(!this.primero){
+            return false;
         } else{
-            return indexCodigo;
+            return this._recEliminar(parseInt(codigoEliminar),this.primero);
+        }
+    }
+    _recEliminar(codigoEliminar,nodox){
+        if(nodox.codigo == codigoEliminar){ // Si es el primero
+            if(nodox.codigo == this.ultimo.codigo){ // Si es valor único
+                this.ultimo = null;
+            }
+            this.primero = nodox.siguiente; // asignamos un nuevo primero
+            return true; // confirmamos eliminación
+        } else if(!nodox.siguiente){ // Si no lo encuentra
+            return false;
+        } else{
+            if(nodox.siguiente.codigo == codigoEliminar){ // Evalua el siguiente
+                if(nodox.siguiente.codigo == this.ultimo.codigo){ // si es el ultimo el último será el anterior
+                    this.ultimo = nodox
+                }
+                nodox.siguiente = nodox.siguiente.siguiente; // Une la cadena
+                return true; // confirmamos eliminación
+            } else{ // Entra recursividad
+                return this._recEliminar(codigoEliminar,nodox.siguiente);
+            }
         }
     }
 }
@@ -150,6 +161,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     Agrega nuevos elementos a nuestro inventario.
     ---------------------------------------------------------------*/
     const btnAdd = document.getElementById("btnAdd");
+    
     btnAdd.addEventListener("click",()=>{
         let codigo = document.getElementById("txtCodigo").value;
         let producto = document.getElementById("txtProducto").value;
@@ -173,6 +185,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     Busca los elementos de nuestro inventario mediante el input del código.
     ---------------------------------------------------------------*/
     const btnBuscar = document.getElementById("btnBuscar");
+    
     btnBuscar.addEventListener("click",() => {
         let codigo = document.getElementById("txtCodigo").value;
         let productoBuscado = miInventario.buscar(codigo);
@@ -192,6 +205,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     Busca el código ingresado y lo elimina del inventario.
     ---------------------------------------------------------------*/
     let btnEliminar = document.getElementById("btnEliminar");
+    
     btnEliminar.addEventListener("click",()=>{
         let codigo = document.getElementById("txtCodigo").value;
         let producoEliminar = miInventario.eliminar(codigo);
