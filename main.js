@@ -38,18 +38,11 @@ class Inventario{
             // Si el inventario está vacío simplemente lo agregamos.
             if(!this.primero){
                 this.primero = nuevoProducto;
+                this.ultimo = nuevoProducto;
             } else {
-                this._recAgregar(nuevoProducto,this.primero);
+                this.ultimo.siguiente = nuevoProducto;
+                this.ultimo = nuevoProducto;
             }
-    }
-    _recAgregar(nuevo,nodox){ //recursividad
-        // cuando llegue al final agrega el nuevo
-        if(!nodox.siguiente){
-            nodox.siguiente = nuevo;
-            this.ultimo = nodox.siguiente;
-        } else{
-            this._recAgregar(nuevo,nodox.siguiente);
-        }
     }
     /*==================================================
     Método para listar todos los Productos del 
@@ -94,27 +87,20 @@ class Inventario{
     retorna su objeto.
     =======================================================*/
     buscar(codigoBuscado){
-        let productoBuscado = null;
-        let indiceCodigo = 0;
-        if(this.productos){
-            let aux = this.productos
-            console.log(aux);
-            // Cuando encontremos un producto o lleguemos al tamaño de nuestros datos, se rompe el ciclo.
-            while(!productoBuscado && aux.siguiente){
-                if(this.aux.siguiente.codigo == codigoBuscado){
-                    productoBuscado = this.aux;
-                    indiceCodigo++
-                }
-                aux = aux.siguiente;
-                indiceCodigo++;
-            }
-
-            // Retornamos el Producto encontrado o valor nulo para condicionarlo posteriormente.
-            // Para llamar al Producto o su Índice usar: 
-            //      - Por Producto: .buscar(x)[0]
-            //      - Por IndexCodigo: .buscar(x)[1]
+        if(!this.primero){
+            return null;
+        } else{
+            return this._recBuscar(parseInt(codigoBuscado),this.primero);
         }
-        return [productoBuscado,indiceCodigo];
+    }
+    _recBuscar(codigoBuscado,nodox){
+        if(nodox.codigo == codigoBuscado){
+            return nodox;
+        } else if(!nodox.siguiente){
+            return null;
+        } else{
+            return this._recBuscar(codigoBuscado,nodox.siguiente);
+        }
     }
 
     /*=================================================
@@ -170,7 +156,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         let cantidad = document.getElementById("txtCantidad").value;
         let costo = document.getElementById("txtCosto").value;
 
-        if(miInventario.buscar(codigo)[0]){
+        if(miInventario.buscar(codigo)){
             detalles.innerHTML+=`<p>El código <b>${codigo}<b> ya existe en el inventario.<p>`
         } else{
             let nuevoProducto = new Producto(codigo,producto,cantidad,costo);
@@ -189,7 +175,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     const btnBuscar = document.getElementById("btnBuscar");
     btnBuscar.addEventListener("click",() => {
         let codigo = document.getElementById("txtCodigo").value;
-        let productoBuscado = miInventario.buscar(codigo)[0];
+        let productoBuscado = miInventario.buscar(codigo);
         let detalles = document.getElementById("detalles");
 
         // Si regresa el producto buscado lo mostramos, sino mostramos que no se encontró.
@@ -197,7 +183,7 @@ document.addEventListener("DOMContentLoaded",()=>{
             detalles.innerHTML += `==== PRODUCTO ====<br>
             <b>Código:</b> ${productoBuscado.codigo} ::: <b>Nombre:</b> ${productoBuscado.producto} ::: <b>Cantidad:</b> ${productoBuscado.cantidad} ::: <b>Costo:</b> ${productoBuscado.costo}<br>`
         } else {
-            detalles.innerHTML+=`<p>Producto con el código <b>${codigo}<b> no fue encontrado.<p>`
+            detalles.innerHTML+=`<p>Producto con el código <b>${codigo}</b> no fue encontrado.<p>`
         }
     })
 
