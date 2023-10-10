@@ -29,17 +29,16 @@ Eliminar.
 class Inventario{
     constructor(){
         this.primero = null;
-        this.ultimo = null;
     }
     /*==================================================
     Método para agregar nuevos Productos al inventario
     con recursividad.
+        - Ingresa objeto Producto.
     ===================================================*/
     agregar(nuevoProducto){
             // Si el inventario está vacío simplemente lo agregamos.
             if(!this.primero){
                 this.primero = nuevoProducto;
-                this.ultimo = nuevoProducto;
             } else {
                 return this._recAgregar(nuevoProducto,this.primero);
             }
@@ -102,6 +101,7 @@ class Inventario{
     /*======================================================
     Método que busca un Producto con base en su código y
     retorna su objeto.
+        - Ingresa el número del código.
     =======================================================*/
     buscar(codigoBuscado){
         if(!this.primero){
@@ -122,69 +122,27 @@ class Inventario{
 
     /*=================================================
     Método que busca un código y lo elimina.
+        - Ingresa un objeto (usar método .buscar(x);)
     ==================================================*/
     eliminar(codigoEliminar){
-        if(!this.primero){
-            return false;
-        } else{
-            return this._recEliminar(parseInt(codigoEliminar),this.primero);
-        }
-    }
-    _recEliminar(codigoEliminar,nodox){
-        if(nodox.codigo == codigoEliminar){ // Si es el primero
-            if(nodox.codigo == this.ultimo.codigo){ // Si es valor único
-                this.ultimo = null;
+        if(!codigoEliminar.anterior){ // Es el primero
+            if(!codigoEliminar.siguiente){ // Es el único
+                this.primero = null;
+            }else {
+                this.primero = codigoEliminar.siguiente;
+                codigoEliminar.siguiente.anterior = null;
             }
-            this.primero = nodox.siguiente; // asignamos un nuevo primero
-            return true; // confirmamos eliminación
-        } else if(!nodox.siguiente){ // Si no lo encuentra
-            return false;
-        } else{
-            if(nodox.siguiente.codigo == codigoEliminar){ // Evalua el siguiente
-                if(nodox.siguiente.codigo == this.ultimo.codigo){ // si es el ultimo el último será el anterior
-                    this.ultimo = nodox
-                }
-                nodox.siguiente = nodox.siguiente.siguiente; // Une la cadena
-                return true; // confirmamos eliminación
-            } else{ // Entra recursividad
-                return this._recEliminar(codigoEliminar,nodox.siguiente);
-            }
-        }
-    }
-    /*=================================================
-    Método que inserta un producto en una posición dada.
-    ==================================================*/
-    insertarEnPosicion(nuevo,posicion){
-        let aux = this.primero
-        let anterior = null;
-        let contador = 1;
-
-        while(contador != posicion && aux.siguiente){
-            anterior = aux
-            aux = aux.siguiente;
-            contador++
-        }
-        
-        // Evaluamos casos para insertar
-        if(contador == 1){ // Insertar en primera posición
-            if(aux.codigo == this.ultimo.codigo){ // Si es único valor
-                this.ultimo = aux
-            }
-            nuevo.siguiente = aux;
-            this.primero = nuevo;
-        } else if(posicion>contador){ // Si se quiere agregar más allá del número de elementos que tenemos lo insertamos al último.
-            aux.siguiente = nuevo;
-            this.ultimo = nuevo;
-        } else{ // Si la posición es la última
-            nuevo.siguiente = aux;
-            anterior.siguiente = nuevo;
+        } else if(!codigoEliminar.siguiente){ // Es el último
+            codigoEliminar.anterior.siguiente = null
+        } else { // Está entre dos nodos
+            codigoEliminar.anterior.siguiente = codigoEliminar.siguiente;
+            codigoEliminar.siguiente.anterior = codigoEliminar.anterior;
         }
     }
 }
 
 // Función que borra la información de los inputs.
 function borrarInformacionDeInputs(){
-    document.getElementById("txtInsertarEn").value = "";
     document.getElementById("txtCodigo").value = "";
     document.getElementById("txtProducto").value = "";
     document.getElementById("txtCantidad").value = "";
@@ -256,12 +214,13 @@ document.addEventListener("DOMContentLoaded",()=>{
     
     btnEliminar.addEventListener("click",()=>{
         let codigo = document.getElementById("txtCodigo").value;
-        let producoEliminar = miInventario.eliminar(codigo);
+        let producoEliminar = miInventario.buscar(codigo);
         let detalles = document.getElementById("detalles");
 
         // Mandamos mensaje acorde a si se encontró un producto a eliminar o no se encontró.
         if(producoEliminar){
-            detalles.innerHTML += `<p>El código ${codigo} fue eliminado correctamente.</p>`
+            miInventario.eliminar(producoEliminar);
+            detalles.innerHTML += `<p> El producto fue eliminado correctamente</p>`
         } else {
             detalles.innerHTML += `<p>El código ${codigo} NO se encuentra en la lista, favor de verificarlo.</p>`
         }
@@ -286,60 +245,4 @@ document.addEventListener("DOMContentLoaded",()=>{
         let detalles = document.getElementById("detalles");
         detalles.innerHTML += "<br>"+ miInventario.listarInverso();
     })
-
-    /*----------------------------------------------------------------
-    Botón InsertarEn
-    Desactiva varios botones y muestra el botón para insertarEn.
-    También activa un nuevo input para recoger la posición en la que
-    se quiere insertar.
-    ----------------------------------------------------------------*/
-    let btnInsertarEn = document.getElementById("btnInsertarEn");
-    btnInsertarEn.addEventListener("click",()=>{
-        // Desactivar botones
-        document.getElementById("btnAdd").disabled = true;
-        document.getElementById("btnBuscar").disabled = true;
-        document.getElementById("btnEliminar").disabled = true;
-        document.getElementById("btnListar").disabled = true;
-        document.getElementById("btnListarInverso").disabled = true;
-        document.getElementById("btnInsertarEn").disabled = true;
-
-        // Activar botón de agregar e input para añadir la posición
-        document.getElementById("btnAgregarEn").disabled = false;
-        document.getElementById("txtInsertarEn").disabled = false;
-    });
-    
-    let btnAgregarEn = document.getElementById("btnAgregarEn");
-    btnAgregarEn.addEventListener("click",()=>{
-        let posicion = document.getElementById("txtInsertarEn").value
-        let codigo = document.getElementById("txtCodigo").value;
-        let producto = document.getElementById("txtProducto").value;
-        let cantidad = document.getElementById("txtCantidad").value;
-        let costo = document.getElementById("txtCosto").value;
-        let detalles = document.getElementById("detalles");
-
-        let productoBuscado = miInventario.buscar(codigo);
-
-        if(productoBuscado){
-            detalles.innerHTML += `<br> El código ${codigo} ya se encuentra registrado.` 
-        } else{
-            let nuevo = new Producto(codigo,producto,cantidad,costo);
-            miInventario.insertarEnPosicion(nuevo,posicion);
-
-            // Reactivamos los botones
-            document.getElementById("btnAdd").disabled = false;
-            document.getElementById("btnBuscar").disabled = false;
-            document.getElementById("btnEliminar").disabled = false;
-            document.getElementById("btnListar").disabled = false;
-            document.getElementById("btnListarInverso").disabled = false;
-            document.getElementById("btnInsertarEn").disabled = false;
-
-            // Deshabilitamos el input de posición y el botón de agregar
-            document.getElementById("btnAgregarEn").disabled = true;
-            document.getElementById("txtInsertarEn").disabled = true;
-            
-            borrarInformacionDeInputs();
-        }
-
-    });
-
 });
