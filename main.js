@@ -9,6 +9,7 @@ class Producto{
         this.cantidad = cantidad;
         this.costo = costo;
         this.siguiente = null;
+        this.anterior = null;
     }
     // Retorna información básica de un producto.
     info(){
@@ -40,9 +41,25 @@ class Inventario{
                 this.primero = nuevoProducto;
                 this.ultimo = nuevoProducto;
             } else {
-                this.ultimo.siguiente = nuevoProducto;
-                this.ultimo = nuevoProducto;
+                return this._recAgregar(nuevoProducto,this.primero);
             }
+    }
+    _recAgregar(nuevoProducto,nodox){
+        if(nuevoProducto.codigo < this.primero.codigo){ // Si es menor que el primero nodo.
+            nuevoProducto.siguiente = nodox;
+            nodox.anterior = nuevoProducto;
+            this.primero = nuevoProducto;
+        } else if(nuevoProducto.codigo < nodox.codigo){ // Si está en medio de dos nodos.
+            nuevoProducto.siguiente = nodox;
+            nuevoProducto.anterior = nodox.anterior;
+            nodox.anterior.siguiente = nuevoProducto;
+            nodox.anterior = nuevoProducto;
+        } else if(!nodox.siguiente){ // Si es más grande que todos.
+            nuevoProducto.anterior = nodox;
+            nodox.siguiente = nuevoProducto
+        } else{
+            return this._recAgregar(nuevoProducto,nodox.siguiente)
+        }
     }
     /*==================================================
     Método para listar todos los Productos del 
