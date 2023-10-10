@@ -128,7 +128,7 @@ class Inventario{
         if(!codigoEliminar.anterior){ // Es el primero
             if(!codigoEliminar.siguiente){ // Es el único
                 this.primero = null;
-            }else {
+            } else {
                 this.primero = codigoEliminar.siguiente;
                 codigoEliminar.siguiente.anterior = null;
             }
